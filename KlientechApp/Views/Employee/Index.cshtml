@@ -1,0 +1,367 @@
+﻿@model IEnumerable<KlientechApp.Models.Luci>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="http://codeseven.github.com/toastr/toastr.js"></script>
+<link rel="stylesheet" type="text/css" href="http://codeseven.github.com/toastr/toastr.css">
+
+
+
+<!--Loading font awesome icons.-->
+<script src="https://use.fontawesome.com/d94f445648.js"></script>
+
+
+<link href="https://kendo.cdn.telerik.com/2021.1.119/styles/kendo.common.min.css" rel="stylesheet" type="text/css" />
+<link href="https://kendo.cdn.telerik.com/2021.1.119/styles/kendo.flat.min.css" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+<script src="https://kendo.cdn.telerik.com/2021.1.119/js/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.1.119/js/jszip.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.1.119/js/kendo.all.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.1.119/js/kendo.aspnetmvc.min.js"></script>
+<script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+
+<br />
+<button type="button" class="btn btn-primary pull-right" data-toggle="modal" id="btnAdd" data-target="#EmployeeModal">
+    Add Employee <span class="fa fa-plus-square" aria-hidden="true"></span>
+</button>
+<br />
+
+
+
+<table class="table table-striped table-hover table-bordered" id="EmployeeTable" style="margin-top:20px">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th >
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th style="display:none;">
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th style="display:none;">
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th style="display:none;">
+                @Html.DisplayNameFor(model => model.Address1)
+            </th>
+            <th style="display:none;">
+                @Html.DisplayNameFor(model => model.Address2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Action)
+            </th>
+            
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <th >
+                @Html.DisplayFor(modelItem => item.Age)
+            </th>
+            <td style="display:none;">
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td style="display:none;">
+                @Html.DisplayFor(modelItem => item.Telephone)
+            </td>
+            <td style="display:none;">
+                @Html.DisplayFor(modelItem => item.Address1)
+            </td>
+            <td style="display:none;">
+                @Html.DisplayFor(modelItem => item.Address2)
+            </td>
+            <td>
+
+
+
+                @Html.DropDownList("Action2", null, new
+            { onchange = "document.location.href='/Employee/Index?value ='+this.value;" })
+
+                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" id="Action" data-target="#ActionBox">
+                    +
+                </button>
+
+            </td>
+           
+
+
+        </tr>
+        }
+
+    </tbody>
+
+</table>
+<style>
+    .modal.custom {
+        outline: none;
+    }
+
+        .modal.custom .modal-dialog {
+            width: 40%;
+            margin: 0 auto;
+        }
+
+    .modal-header {
+        min-height: 16.428571429px;
+        padding: 15px;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #428bca;
+    }
+
+    .modal-title {
+        color: white;
+    }
+
+    .required:after {
+        margin: 2px;
+        content: "*";
+        color: red;
+    }
+
+    .btnTest {
+        background-image: url('../../Images/icon.png');
+        float: left;
+        width: 10px;
+        height: 40px;
+    }
+</style>
+<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //if ($("#comboB").length > 0)
+            $("#comboB").kendoComboBox();
+
+
+        });
+
+        $('#EmployeeTable').DataTable({
+            "bFilter": false,
+            "bLengthChange": false
+        });
+        $('#Action').click(function () {
+            $('#ActionBox').modal('show');
+
+        });
+        $('#btnAdd').click(function () {
+            $('#FirstName').val('');
+            $('#LastName').val('');
+            $('#BirthDay').val('');
+            $('#Telephone').val('');
+            $('#Address1').val('');
+            $('#Address2').val('');
+            $('#Age').val('');
+            $('#ModalTitle').text('Add Employee');
+            $('#EmployeeModal').modal('show');
+        });
+        $('#btnSave').click(function () {
+            var table = $('#EmployeeTable').DataTable()
+            if ($('#FirstName').val() == '' ||
+                $('#LastName').val() == ''  ||
+                $('#Age').val() == ''       ||
+                $('#BirthDay').val() == '' ||
+                $('#Telephone').val() == '' ||
+                $('#Address1').val() == '' 
+                
+                ) {
+                toastr.error("All fields are required");
+            }
+            else {
+                var EmployeeObj = {
+
+                    FirstName: $('#FirstName').val(),
+                    LastName: $('#LastName').val(),
+                    DateOfBirth: $('#BirthDay').val(),
+                    Telephone: $('#Telephone').val(),
+                    Address1: $('#Address1').val(),
+                    Address2: $('#Address2').val(),
+                    Action2: $('').val(),
+                    Age: $("#Age").val(),
+                    FullName: $('#FirstName').val() + $('#LastName').val(),
+                }
+                $.ajax({
+                    url: '/Employee/Create',
+                    dataType: 'json',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(EmployeeObj),
+                    success: function (response) {
+                        if (response.status) {
+                            toastr.success(response.message, "Message")
+                            table.row.add([$('#FirstName').val(), $('#LastName').val(), $('#BirthDay').val(), $('#Address1').val(), $('#Address2').val(), $('#Telephone').val(), $('#Age').val()]).draw(false);
+                        }
+                    }
+
+                });
+                $('#EmployeeModal').modal('hide')
+
+            }
+
+        });
+
+
+
+
+    </script>
+}
+<!-- Modal-->
+<div class="modal fade" id="EmployeeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalTitle"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="mConta">
+                    <div class="form-group">
+                        <div class="col-sm-9">
+                            <span class="col-sm-3 control-label" id="txtID"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">First Name</span>
+                        <div class="col-sm-9">
+                            <input id="FirstName" class="form-control" type="text" placeholder="Enter First Name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">Last Name</span>
+                        <div class="col-sm-9">
+                            <input id="LastName" class="form-control" type="text" placeholder="Enter Last Name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">Age</span>
+                        <div class="col-sm-9">
+                            <input id="Age" class="form-control" type="text" placeholder="Enter Age" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">BirthDay</span>
+                        <div class="col-sm-9">
+                            <input id="BirthDay" class="form-control" type="date" placeholder="Enter BDay" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">Telephone</span>
+                        <div class="col-sm-9">
+                            <input id="Telephone" class="form-control" type="text" placeholder="Enter Telephone" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">Address1</span>
+                        <div class="col-sm-9">
+                            <input id="Address1" class="form-control" type="text" placeholder="Enter Address1" />
+                            <span class="col-sm-3 control-label" style="font-weight:bold;">Primary</span>
+                            <div class="col-sm-9">
+                                <input id="rad1"  type="radio"  name="ch"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="required col-sm-3 control-label" style="font-weight:bold;">Enter Address2</span>
+                        <div class="col-sm-9">
+                            <input id="Address2" class="form-control" type="text" placeholder="Enter Address2" />
+                            <span class="col-sm-3 control-label" style="font-weight:bold;">Primary</span>
+                            <div class="col-sm-9">
+                                <input id="rad2" type="radio" name="ch" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal">
+                    Save <span class="fa fa-floppy-o" aria-hidden="true"></span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function onAdditionalData() {
+        return {
+            text: $("#Status").val()
+        };
+    }
+</script>
+
+
+
+
+<div class="modal fade" id="ActionBox" tabindex="-1" role="dialog" aria-labelledby="myModalLable" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalTitle">Select Spouse</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+
+            <div class="modal-body">
+                <span class="required col-sm-3 control-label" style="font-weight:bold;">Spouse</span>
+
+                @(Html.Kendo().AutoComplete()
+                 .Name("Status")
+                .DataTextField("FullName")
+                .Filter("startswith")
+                .MinLength(3)
+                .DataSource(source =>
+                 {
+                 source.Read(read =>
+                     {
+                     read.Action("GetEmployees", "Home")
+                     .Data("onAdditionalData");
+
+                     })
+                     .ServerFiltering(true);
+
+
+    }))
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave2" data-dismiss="modal">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>
